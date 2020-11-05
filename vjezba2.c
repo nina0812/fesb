@@ -1,10 +1,17 @@
+
 /*2. Definirati strukturu osoba (ime, prezime, godina rodenja) i napisati program koji:
-a) dinamicki dodaje novi element na po�etak liste,
+a) dinamicki dodaje novi element na početak liste,
 b) ispisuje listu,
 c) dinamicki dodaje novi element na kraj liste,
 d) pronalazi element u listi (po prezimenu),
-e) bri�e odre�eni element iz liste.
-U zadatku se ne smiju koristiti globalne varijable.*/
+e) briše određeni element iz liste.
+U zadatku se ne smiju koristiti globalne varijable.
+3. Prethodnom zadatku dodati funkcije :
+a) dinamički dodaje novi element iza određenog elementa,
+b) dinamički dodaje novi element ispred određenog elementa,
+c) sortira listu po prezimenima osoba,
+d) upisuje listu u datoteku,
+e) čita listu iz datoteke.*/
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
@@ -23,9 +30,12 @@ void UnosP(Pozicija P);
 void Ispis(Pozicija P);
 void UnosK(Pozicija P);
 Pozicija TrazipoPrez(Pozicija P);
-Pozicija Trazipreth(char*, Pozicija P);
-void Brisi(char*, Pozicija P);
+Pozicija Traziprethodni(Pozicija P);
+void Brisielement(Pozicija P);
 void Unososobe(Pozicija P);
+void dodajiza(Pozicija P);
+void dodajispred(Pozicija P);
+void upisudatoteku(Pozicija P);
 int main()
 {
 	Osoba head;
@@ -40,6 +50,9 @@ int main()
 		printf("3- za dodavanje elementa na kraj liste.\n");
 		printf("4-za trazenje elementa po prezimenu.\n");
 		printf("5-za brisanje odredenog elementa.\n");
+		printf("6-ako zelite dodati element iza odredenog elementa u listi.\n");
+		printf("7-ako zelite dodati element ispred odredenog elementa u listi.\n");
+		printf("8-ako zelite upisati listu u datoteku.\n");
 		printf("z-za izlaz\n");
 		printf("Vas izbor je: \n");
 		scanf(" %c", &izbor);
@@ -58,10 +71,17 @@ int main()
 			TrazipoPrez(head.next);
 			break;
 		case '5':
-			printf("Unesite prezime koje zelite izbrisati: ");
-			scanf("%s", prezime);
-			Brisi(prezime, &head);
+			Brisielement(&head);
 			break;
+		case '6':
+			dodajiza(&head);
+			break;
+		case '7':
+			dodajispred(&head);
+			break;
+		case '8':
+			upisudatoteku(&head);
+			break;		
 		case 'z':
 			printf("Izlaz");
 			break;
@@ -141,33 +161,66 @@ Pozicija TrazipoPrez(Pozicija P)
 		printf("osoba s %s prezimenom ne postoji u listi.\n", prezime);
 	}
 }
-Pozicija TraziPreth(char* prezime, Pozicija P)
+Pozicija Traziprethodni(Pozicija P, Pozicija temp)
 {
-	Pozicija prev = P;
-	P = P->next;
-	while (P != NULL && strcmp(P->prezime, prezime))
-	{
-		prev = P;
+	while (P->next != temp)
 		P = P->next;
-	}
-	if (P == NULL)
-	{
-		printf("Element ne postoji u listi. ");
-		return NULL;
-	}
-	return prev;
+	return P;
 }
-void Brisi(char* prezime, Pozicija P)
+
+void Brisielement(Pozicija P)
 {
-	Pozicija prev;
-	prev = TraziPreth(prezime, P);
-	if (prev != NULL)
+	printf("Koji element zelite izbrisati?\n");
+	Pozicija temp = TrazipoPrez(P);
+	Pozicija prev = Traziprethodni(P, temp);
+	prev->next = temp->next;
+	free(temp);
+}
+void dodajiza(Pozicija P)
+{
+	Pozicija q;
+	q = (Pozicija)malloc(sizeof(Osoba));
+	Unososobe(q);
+	printf("Iza kojeg clana zelite unijeti novi element? ");
+	Pozicija a = TrazipoPrez(Pozicija P) ;
+	q->next = a->next;
+	a->next = q;
+}
+void dodajispred(Pozicija P)
+{
+	Pozicija q = (Pozicija)malloc(sizeof(Osoba));
+	Unososobe(q);
+	printf("Ispred kojeg prezimena zelite ubaciti novi element? \n");
+	Pozicija a = TrazipoPrez(Pozicija P);
+	Pozicija prev = Traziprethodni(P,a);
+	prev->next = q;
+	q->next = a;
+}
+void upisudatoteku(Pozicija P)
+{
+	FILE* fp;
+	char imedatoteke[20] = { 0 };
+	printf("Unesite ime datoteke: \n");
+	scanf("%s", imedatoteke);
+	fp = fopen(imedatoteke, "w");
+	Pozicija temp = P->next;
+	if (fp == NULL)
 	{
-		P = prev->next;
-		prev->next = P->next;
-		free(P);
+		printf("Greska pri otvaranju datoteke.\n");
+	}
+	else
+	{
+		while (temp != NULL)
+		{
+			fprintf(fp, "%s %s %d\n", temp->ime, temp->prezime, temp->godinarodenja);
+
+			temp = temp->next;
+
+		}
+		fclose(fp);
 	}
 }
+
 
 
 
