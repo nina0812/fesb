@@ -1,9 +1,9 @@
-/*Za dvije sortirane liste L1 i L2 (mogu se pro�itati iz datoteke ili unijeti ru�no,
+/*Za dvije sortirane liste L1 i L2 (mogu se pročitati iz datoteke ili unijeti ručno,
 		bitno je
-		samo da su sortirane), napisati program koji stvara novu vezanu listu tako da ra�una :
+		samo da su sortirane), napisati program koji stvara novu vezanu listu tako da računa :
 		a) L1?L2,
 		b) L1?L2.
-		Liste osim pokaziva�a na slijede�u strukturu imaju i jedan cjelobrojni element, po
+		Liste osim pokazivača na slijedeću strukturu imaju i jedan cjelobrojni element, po
 		kojem su sortirane*/
 
 #define _CRT_SECURE_NO_WARNINGS
